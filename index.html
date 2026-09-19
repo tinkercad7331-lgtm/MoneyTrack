@@ -1,0 +1,1383 @@
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0b0b14">
+<title>MoneyTrack</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+    --bg: #080811;
+    --card: rgba(24, 24, 42, .82);
+    --card2: #171729;
+    --text: #f5f5ff;
+    --muted: #9292aa;
+    --purple: #8b5cf6;
+    --blue: #4f7cff;
+    --green: #35d07f;
+    --red: #ff5c72;
+    --border: rgba(255,255,255,.08);
+}
+
+body {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+        radial-gradient(circle at 20% 0%, rgba(139,92,246,.18), transparent 35%),
+        radial-gradient(circle at 100% 20%, rgba(79,124,255,.12), transparent 30%),
+        var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+button, input, select {
+    font: inherit;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+}
+
+.app {
+    width: 100%;
+    max-width: 650px;
+    margin: auto;
+    padding: 18px 16px 100px;
+}
+
+/* HEADER */
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -.7px;
+}
+
+.logo span {
+    background: linear-gradient(90deg, var(--purple), var(--blue));
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.header-sub {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--purple), var(--blue));
+    font-weight: 800;
+}
+
+/* BALANCE */
+
+.balance-card {
+    position: relative;
+    overflow: hidden;
+    padding: 25px;
+    border-radius: 25px;
+    background:
+        linear-gradient(135deg, rgba(139,92,246,.25), rgba(79,124,255,.14)),
+        rgba(20,20,36,.9);
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+
+.balance-card::after {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    right: -70px;
+    top: -80px;
+    background: rgba(139,92,246,.2);
+    filter: blur(45px);
+    border-radius: 50%;
+}
+
+.balance-title {
+    color: #aaaac0;
+    font-size: 13px;
+}
+
+.balance {
+    margin-top: 8px;
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.currency {
+    font-size: 21px;
+    color: #b9b9ce;
+}
+
+.balance-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.money-box {
+    flex: 1;
+    padding: 13px;
+    border-radius: 15px;
+    background: rgba(255,255,255,.055);
+}
+
+.money-label {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.money-value {
+    margin-top: 5px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.income {
+    color: var(--green);
+}
+
+.expense {
+    color: var(--red);
+}
+
+/* ADD BUTTON */
+
+.add-btn {
+    width: 100%;
+    margin-top: 15px;
+    padding: 17px;
+    border-radius: 17px;
+    color: white;
+    font-weight: 800;
+    font-size: 15px;
+    background: linear-gradient(90deg, var(--purple), var(--blue));
+    box-shadow: 0 10px 30px rgba(92,70,220,.25);
+    transition: .2s;
+}
+
+.add-btn:active {
+    transform: scale(.98);
+}
+
+/* NAV */
+
+.nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 25px 0 20px;
+}
+
+.nav button {
+    padding: 12px 5px;
+    border-radius: 13px;
+    color: var(--muted);
+    background: transparent;
+    font-size: 13px;
+}
+
+.nav button.active {
+    color: white;
+    background: rgba(139,92,246,.14);
+}
+
+/* SECTIONS */
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 13px;
+}
+
+.section-title h2 {
+    font-size: 19px;
+}
+
+.small {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* TRANSACTIONS */
+
+.transactions {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.transaction {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 17px;
+    background: var(--card);
+    border: 1px solid var(--border);
+}
+
+.transaction-icon {
+    width: 43px;
+    height: 43px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: rgba(255,255,255,.06);
+    font-size: 20px;
+}
+
+.transaction-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.transaction-name {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.transaction-date {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.transaction-amount {
+    font-size: 14px;
+    font-weight: 800;
+}
+
+/* EMPTY */
+
+.empty {
+    text-align: center;
+    padding: 35px 15px;
+    color: var(--muted);
+    background: rgba(255,255,255,.025);
+    border: 1px dashed var(--border);
+    border-radius: 18px;
+}
+
+.empty-icon {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+/* GOALS */
+
+.goal {
+    padding: 18px;
+    border-radius: 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+}
+
+.goal-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.goal-name {
+    font-weight: 800;
+}
+
+.goal-percent {
+    color: var(--purple);
+    font-weight: 800;
+}
+
+.progress {
+    height: 9px;
+    background: rgba(255,255,255,.08);
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 14px 0 10px;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--purple), var(--blue));
+}
+
+.goal-bottom {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.goal-add {
+    margin-top: 13px;
+    width: 100%;
+    padding: 11px;
+    border-radius: 12px;
+    background: rgba(139,92,246,.12);
+    color: #c5b5ff;
+}
+
+/* STATS */
+
+.stat-card {
+    padding: 18px;
+    border-radius: 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+}
+
+.stat-card h3 {
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 9px 0;
+    color: #cccce0;
+    font-size: 13px;
+}
+
+.stat-bar {
+    height: 7px;
+    border-radius: 20px;
+    background: rgba(255,255,255,.07);
+    margin-top: 5px;
+}
+
+.stat-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--purple), var(--blue));
+}
+
+/* MODAL */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    background: rgba(0,0,0,.7);
+    backdrop-filter: blur(7px);
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 650px;
+    padding: 22px 17px 30px;
+    border-radius: 27px 27px 0 0;
+    background: #121220;
+    border-top: 1px solid var(--border);
+    animation: slideUp .25s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.close {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    color: white;
+    background: rgba(255,255,255,.07);
+}
+
+.type-switch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 13px;
+}
+
+.type-switch button {
+    padding: 13px;
+    border-radius: 13px;
+    color: var(--muted);
+    background: rgba(255,255,255,.05);
+}
+
+.type-switch button.active.income-type {
+    background: rgba(53,208,127,.13);
+    color: var(--green);
+}
+
+.type-switch button.active.expense-type {
+    background: rgba(255,92,114,.13);
+    color: var(--red);
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 7px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    outline: none;
+    color: white;
+    background: #1b1b2d;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--purple);
+}
+
+.save-btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 14px;
+    color: white;
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--purple), var(--blue));
+}
+
+/* DELETE */
+
+.delete-btn {
+    background: none;
+    color: #77778c;
+    margin-left: 8px;
+    font-size: 15px;
+}
+
+/* FOOTER */
+
+.footer {
+    text-align: center;
+    color: #555568;
+    font-size: 10px;
+    margin-top: 30px;
+}
+
+/* DESKTOP */
+
+@media (min-width: 700px) {
+    .app {
+        padding-top: 35px;
+    }
+
+    .modal {
+        align-items: center;
+    }
+
+    .modal-content {
+        border-radius: 25px;
+        border: 1px solid var(--border);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="header">
+        <div>
+            <div class="logo">Money<span>Track</span></div>
+            <div class="header-sub">Управляй своими деньгами</div>
+        </div>
+
+        <div class="avatar">₽</div>
+    </header>
+
+    <!-- BALANCE -->
+    <div class="balance-card">
+        <div class="balance-title">Общий баланс</div>
+
+        <div class="balance">
+            <span id="balance">0,00</span>
+            <span class="currency">₽</span>
+        </div>
+
+        <div class="balance-row">
+            <div class="money-box">
+                <div class="money-label">Доходы</div>
+                <div class="money-value income" id="income">+0,00 ₽</div>
+            </div>
+
+            <div class="money-box">
+                <div class="money-label">Расходы</div>
+                <div class="money-value expense" id="expense">−0,00 ₽</div>
+            </div>
+        </div>
+    </div>
+
+    <button class="add-btn" onclick="openTransactionModal()">
+        ＋ Добавить операцию
+    </button>
+
+    <!-- NAV -->
+    <nav class="nav">
+        <button class="active" onclick="showSection('home', this)">Главная</button>
+        <button onclick="showSection('goals', this)">🎯 Цели</button>
+        <button onclick="showSection('stats', this)">📊 Статистика</button>
+    </nav>
+
+    <!-- HOME -->
+    <section id="home" class="section active">
+
+        <div class="section-title">
+            <h2>Последние операции</h2>
+            <span class="small" id="transactionCount">0 операций</span>
+        </div>
+
+        <div id="transactions" class="transactions"></div>
+
+    </section>
+
+    <!-- GOALS -->
+    <section id="goals" class="section">
+
+        <div class="section-title">
+            <h2>Мои цели</h2>
+            <button class="small" onclick="openGoalModal()">＋ Добавить</button>
+        </div>
+
+        <div id="goalsList"></div>
+
+    </section>
+
+    <!-- STATS -->
+    <section id="stats" class="section">
+
+        <div class="section-title">
+            <h2>Статистика</h2>
+            <span class="small">Все время</span>
+        </div>
+
+        <div class="stat-card">
+            <h3>Финансовый результат</h3>
+
+            <div class="stat-row">
+                <span>Доходы</span>
+                <strong class="income" id="statIncome">0 ₽</strong>
+            </div>
+
+            <div class="stat-row">
+                <span>Расходы</span>
+                <strong class="expense" id="statExpense">0 ₽</strong>
+            </div>
+
+            <div class="stat-row">
+                <span>Баланс</span>
+                <strong id="statBalance">0 ₽</strong>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Расходы по категориям</h3>
+            <div id="categoryStats"></div>
+        </div>
+
+    </section>
+
+    <div class="footer">
+        MoneyTrack v1.0 • Твои деньги под контролем
+    </div>
+
+</div>
+
+
+<!-- TRANSACTION MODAL -->
+
+<div class="modal" id="transactionModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h2>Новая операция</h2>
+            <button class="close" onclick="closeTransactionModal()">×</button>
+        </div>
+
+        <div class="type-switch">
+
+            <button
+                id="expenseType"
+                class="active expense-type"
+                onclick="setType('expense')">
+                💸 Расход
+            </button>
+
+            <button
+                id="incomeType"
+                class="income-type"
+                onclick="setType('income')">
+                💰 Доход
+            </button>
+
+        </div>
+
+        <div class="form-group">
+            <label>Название</label>
+            <input
+                id="transactionName"
+                type="text"
+                placeholder="Например: Продукты"
+                maxlength="40">
+        </div>
+
+        <div class="form-group">
+            <label>Сумма</label>
+            <input
+                id="transactionAmount"
+                type="number"
+                step="0.01"
+                min="0.01"
+                placeholder="0.00">
+        </div>
+
+        <div class="form-group">
+            <label>Категория</label>
+
+            <select id="transactionCategory">
+                <option value="Еда">🍔 Еда</option>
+                <option value="Транспорт">🚗 Транспорт</option>
+                <option value="Покупки">🛍️ Покупки</option>
+                <option value="Развлечения">🎮 Развлечения</option>
+                <option value="Здоровье">💊 Здоровье</option>
+                <option value="Образование">📚 Образование</option>
+                <option value="Дом">🏠 Дом</option>
+                <option value="Другое">📦 Другое</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Дата</label>
+            <input id="transactionDate" type="date">
+        </div>
+
+        <button class="save-btn" onclick="saveTransaction()">
+            Сохранить операцию
+        </button>
+
+    </div>
+</div>
+
+
+<!-- GOAL MODAL -->
+
+<div class="modal" id="goalModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h2>Новая цель</h2>
+            <button class="close" onclick="closeGoalModal()">×</button>
+        </div>
+
+        <div class="form-group">
+            <label>Название цели</label>
+            <input
+                id="goalName"
+                type="text"
+                placeholder="Например: Новый ПК"
+                maxlength="40">
+        </div>
+
+        <div class="form-group">
+            <label>Необходимая сумма</label>
+            <input
+                id="goalTarget"
+                type="number"
+                step="0.01"
+                min="1"
+                placeholder="30000">
+        </div>
+
+        <div class="form-group">
+            <label>Уже накоплено</label>
+            <input
+                id="goalSaved"
+                type="number"
+                step="0.01"
+                min="0"
+                value="0">
+        </div>
+
+        <button class="save-btn" onclick="saveGoal()">
+            Создать цель
+        </button>
+
+    </div>
+</div>
+
+
+<script>
+
+/* =========================
+   DATA
+========================= */
+
+let transactions =
+    JSON.parse(localStorage.getItem("moneytrack_transactions")) || [];
+
+let goals =
+    JSON.parse(localStorage.getItem("moneytrack_goals")) || [];
+
+let currentType = "expense";
+
+
+/* =========================
+   HELPERS
+========================= */
+
+function saveData() {
+
+    localStorage.setItem(
+        "moneytrack_transactions",
+        JSON.stringify(transactions)
+    );
+
+    localStorage.setItem(
+        "moneytrack_goals",
+        JSON.stringify(goals)
+    );
+}
+
+
+function formatMoney(value) {
+
+    return Number(value).toLocaleString("ru-RU", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+
+function formatDate(date) {
+
+    const d = new Date(date);
+
+    return d.toLocaleDateString("ru-RU", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    });
+}
+
+
+function getCategoryIcon(category) {
+
+    const icons = {
+        "Еда": "🍔",
+        "Транспорт": "🚗",
+        "Покупки": "🛍️",
+        "Развлечения": "🎮",
+        "Здоровье": "💊",
+        "Образование": "📚",
+        "Дом": "🏠",
+        "Другое": "📦"
+    };
+
+    return icons[category] || "📦";
+}
+
+
+/* =========================
+   BALANCE
+========================= */
+
+function updateBalance() {
+
+    let income = 0;
+    let expense = 0;
+
+    transactions.forEach(t => {
+
+        if (t.type === "income") {
+            income += Number(t.amount);
+        } else {
+            expense += Number(t.amount);
+        }
+
+    });
+
+    const balance = income - expense;
+
+    document.getElementById("balance").textContent =
+        formatMoney(balance);
+
+    document.getElementById("income").textContent =
+        "+" + formatMoney(income) + " ₽";
+
+    document.getElementById("expense").textContent =
+        "−" + formatMoney(expense) + " ₽";
+
+    document.getElementById("statIncome").textContent =
+        "+" + formatMoney(income) + " ₽";
+
+    document.getElementById("statExpense").textContent =
+        "−" + formatMoney(expense) + " ₽";
+
+    document.getElementById("statBalance").textContent =
+        formatMoney(balance) + " ₽";
+}
+
+
+/* =========================
+   TRANSACTIONS
+========================= */
+
+function renderTransactions() {
+
+    const container =
+        document.getElementById("transactions");
+
+    document.getElementById("transactionCount").textContent =
+        transactions.length +
+        (transactions.length === 1 ? " операция" : " операций");
+
+    if (transactions.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">💳</div>
+                <div>Операций пока нет</div>
+                <div class="small" style="margin-top:6px">
+                    Добавь свой первый доход или расход
+                </div>
+            </div>
+        `;
+
+        return;
+    }
+
+    const sorted = [...transactions].sort(
+        (a,b) => new Date(b.date) - new Date(a.date)
+    );
+
+    container.innerHTML = sorted.map(t => {
+
+        const sign = t.type === "income" ? "+" : "−";
+
+        const color =
+            t.type === "income"
+            ? "income"
+            : "expense";
+
+        return `
+            <div class="transaction">
+
+                <div class="transaction-icon">
+                    ${getCategoryIcon(t.category)}
+                </div>
+
+                <div class="transaction-info">
+
+                    <div class="transaction-name">
+                        ${escapeHTML(t.name)}
+                    </div>
+
+                    <div class="transaction-date">
+                        ${t.category} • ${formatDate(t.date)}
+                    </div>
+
+                </div>
+
+                <div class="transaction-amount ${color}">
+                    ${sign}${formatMoney(t.amount)} ₽
+                </div>
+
+                <button
+                    class="delete-btn"
+                    onclick="deleteTransaction('${t.id}')">
+                    ×
+                </button>
+
+            </div>
+        `;
+
+    }).join("");
+}
+
+
+function escapeHTML(text) {
+
+    const div = document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+}
+
+
+function deleteTransaction(id) {
+
+    transactions =
+        transactions.filter(t => t.id !== id);
+
+    saveData();
+
+    updateUI();
+}
+
+
+/* =========================
+   TRANSACTION MODAL
+========================= */
+
+function openTransactionModal() {
+
+    document.getElementById("transactionModal")
+        .classList.add("show");
+
+    document.getElementById("transactionDate").value =
+        new Date().toISOString().split("T")[0];
+
+    document.getElementById("transactionName").focus();
+}
+
+
+function closeTransactionModal() {
+
+    document.getElementById("transactionModal")
+        .classList.remove("show");
+}
+
+
+function setType(type) {
+
+    currentType = type;
+
+    const expenseButton =
+        document.getElementById("expenseType");
+
+    const incomeButton =
+        document.getElementById("incomeType");
+
+    expenseButton.classList.remove("active");
+    incomeButton.classList.remove("active");
+
+    if (type === "expense") {
+        expenseButton.classList.add("active");
+    } else {
+        incomeButton.classList.add("active");
+    }
+}
+
+
+function saveTransaction() {
+
+    const name =
+        document.getElementById("transactionName")
+        .value.trim();
+
+    const amount =
+        Number(
+            document.getElementById("transactionAmount")
+            .value
+        );
+
+    const category =
+        document.getElementById("transactionCategory")
+        .value;
+
+    const date =
+        document.getElementById("transactionDate")
+        .value;
+
+    if (!name) {
+        alert("Введите название операции");
+        return;
+    }
+
+    if (!amount || amount <= 0) {
+        alert("Введите корректную сумму");
+        return;
+    }
+
+    if (!date) {
+        alert("Выберите дату");
+        return;
+    }
+
+    transactions.push({
+
+        id:
+            Date.now().toString() +
+            Math.random().toString(16).slice(2),
+
+        type: currentType,
+
+        name: name,
+
+        amount:
+            Math.round(amount * 100) / 100,
+
+        category: category,
+
+        date: date
+
+    });
+
+    saveData();
+
+    document.getElementById("transactionName").value = "";
+    document.getElementById("transactionAmount").value = "";
+
+    closeTransactionModal();
+
+    updateUI();
+}
+
+
+/* =========================
+   GOALS
+========================= */
+
+function renderGoals() {
+
+    const container =
+        document.getElementById("goalsList");
+
+    if (goals.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">🎯</div>
+                <div>Целей пока нет</div>
+                <div class="small" style="margin-top:6px">
+                    Создай цель и начни копить
+                </div>
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML = goals.map((goal, index) => {
+
+        const percent =
+            Math.min(
+                100,
+                Math.round(
+                    (goal.saved / goal.target) * 100
+                )
+            );
+
+        return `
+            <div class="goal">
+
+                <div class="goal-top">
+
+                    <div class="goal-name">
+                        🎯 ${escapeHTML(goal.name)}
+                    </div>
+
+                    <div class="goal-percent">
+                        ${percent}%
+                    </div>
+
+                </div>
+
+                <div class="progress">
+                    <div
+                        class="progress-bar"
+                        style="width:${percent}%">
+                    </div>
+                </div>
+
+                <div class="goal-bottom">
+                    <span>
+                        ${formatMoney(goal.saved)} ₽
+                    </span>
+
+                    <span>
+                        из ${formatMoney(goal.target)} ₽
+                    </span>
+                </div>
+
+                <button
+                    class="goal-add"
+                    onclick="addToGoal(${index})">
+                    ＋ Пополнить цель
+                </button>
+
+            </div>
+        `;
+
+    }).join("");
+}
+
+
+function openGoalModal() {
+
+    document.getElementById("goalModal")
+        .classList.add("show");
+
+    document.getElementById("goalName").focus();
+}
+
+
+function closeGoalModal() {
+
+    document.getElementById("goalModal")
+        .classList.remove("show");
+}
+
+
+function saveGoal() {
+
+    const name =
+        document.getElementById("goalName")
+        .value.trim();
+
+    const target =
+        Number(
+            document.getElementById("goalTarget")
+            .value
+        );
+
+    const saved =
+        Number(
+            document.getElementById("goalSaved")
+            .value
+        ) || 0;
+
+    if (!name) {
+        alert("Введите название цели");
+        return;
+    }
+
+    if (!target || target <= 0) {
+        alert("Введите сумму цели");
+        return;
+    }
+
+    if (saved < 0 || saved > target) {
+        alert("Проверьте накопленную сумму");
+        return;
+    }
+
+    goals.push({
+
+        name: name,
+
+        target:
+            Math.round(target * 100) / 100,
+
+        saved:
+            Math.round(saved * 100) / 100
+
+    });
+
+    saveData();
+
+    document.getElementById("goalName").value = "";
+    document.getElementById("goalTarget").value = "";
+    document.getElementById("goalSaved").value = "0";
+
+    closeGoalModal();
+
+    renderGoals();
+}
+
+
+function addToGoal(index) {
+
+    const amount =
+        Number(
+            prompt("Сколько добавить к цели?")
+        );
+
+    if (!amount || amount <= 0) {
+        return;
+    }
+
+    const remaining =
+        goals[index].target -
+        goals[index].saved;
+
+    goals[index].saved +=
+        Math.min(amount, remaining);
+
+    saveData();
+
+    renderGoals();
+}
+
+
+/* =========================
+   STATISTICS
+========================= */
+
+function renderStats() {
+
+    const container =
+        document.getElementById("categoryStats");
+
+    const categories = {};
+
+    transactions.forEach(t => {
+
+        if (t.type !== "expense") return;
+
+        if (!categories[t.category]) {
+            categories[t.category] = 0;
+        }
+
+        categories[t.category] += Number(t.amount);
+
+    });
+
+    const values =
+        Object.values(categories);
+
+    if (values.length === 0) {
+
+        container.innerHTML = `
+            <div class="small">
+                Пока нет расходов для анализа.
+            </div>
+        `;
+
+        return;
+    }
+
+    const max =
+        Math.max(...values);
+
+    container.innerHTML =
+        Object.entries(categories)
+        .sort((a,b) => b[1] - a[1])
+        .map(([category, value]) => {
+
+            const percent =
+                (value / max) * 100;
+
+            return `
+                <div class="stat-row">
+                    <span>
+                        ${getCategoryIcon(category)}
+                        ${category}
+                    </span>
+
+                    <strong>
+                        ${formatMoney(value)} ₽
+                    </strong>
+                </div>
+
+                <div class="stat-bar">
+                    <div
+                        class="stat-fill"
+                        style="width:${percent}%">
+                    </div>
+                </div>
+            `;
+
+        }).join("");
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+function showSection(section, button) {
+
+    document.querySelectorAll(".section")
+        .forEach(el => el.classList.remove("active"));
+
+    document.getElementById(section)
+        .classList.add("active");
+
+    document.querySelectorAll(".nav button")
+        .forEach(el => el.classList.remove("active"));
+
+    button.classList.add("active");
+}
+
+
+/* =========================
+   UPDATE UI
+========================= */
+
+function updateUI() {
+
+    updateBalance();
+
+    renderTransactions();
+
+    renderGoals();
+
+    renderStats();
+}
+
+
+/* =========================
+   START
+========================= */
+
+updateUI();
+
+</script>
+
+</body>
+</html>
+```
